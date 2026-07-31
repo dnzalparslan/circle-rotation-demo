@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="circle-rotation-demo" default="run" basedir=".">
+
+    <property name="src.dir" value="src"/>
+    <property name="build.dir" value="build"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="lib.dir" value="lib"/>
+    <property name="network.jar" value="${lib.dir}/network-lib.jar"/>
+
+    <property
+            name="main.class"
+            value="com.md.circle.CircleRotationDemo"/>
+
+    <!--
+        Classpath used for compilation and execution.
+        It currently contains network-lib.jar.
+    -->
+    <path id="project.classpath">
+        <pathelement location="${network.jar}"/>
+    </path>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <echo message="Circle Rotation build cleaned."/>
+    </target>
+
+    <target name="init">
+        <mkdir dir="${classes.dir}"/>
+    </target>
+
+    <target name="compile" depends="init">
+        <available
+                file="${network.jar}"
+                property="network.jar.exists"/>
+
+        <fail
+                unless="network.jar.exists"
+                message="Missing lib/network-lib.jar. Build and copy the library first."/>
+
+        <javac
+                srcdir="${src.dir}"
+                destdir="${classes.dir}"
+                includeantruntime="false"
+                debug="true"
+                encoding="UTF-8"
+		release="22">
+
+            <classpath refid="project.classpath"/>
+            <compilerarg value="-Xlint:all"/>
+        </javac>
+
+        <echo message="Circle Rotation compilation complete."/>
+    </target>
+
+    <target name="run" depends="compile">
+        <java
+                classname="${main.class}"
+                fork="true"
+                failonerror="true">
+
+            <classpath>
+                <pathelement location="${classes.dir}"/>
+                <path refid="project.classpath"/>
+            </classpath>
+        </java>
+    </target>
+
+    <target name="run-tcp-client" depends="compile">
+        <java
+                classname="com.md.circle.TcpCircleClient"
+                fork="true"
+                failonerror="true">
+
+            <classpath>
+                <pathelement location="${classes.dir}"/>
+                <path refid="project.classpath"/>
+            </classpath>
+        </java>
+    </target>
+
+    <target name="run-udp-client" depends="compile">
+        <java
+                classname="com.md.circle.UdpCircleClient"
+                fork="true"
+                failonerror="true">
+
+            <classpath>
+                <pathelement location="${classes.dir}"/>
+                <path refid="project.classpath"/>
+            </classpath>
+        </java>
+    </target>
+
+    <target name="rebuild" depends="clean,compile"/>
+
+</project>
