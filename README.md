@@ -1,4 +1,3 @@
-
 # Circle Rotation Demo
 
 A Java Swing application that demonstrates remote control of a graphical interface using TCP and UDP communication.
